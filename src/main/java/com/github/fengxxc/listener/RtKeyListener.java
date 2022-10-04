@@ -1,6 +1,7 @@
 package com.github.fengxxc.listener;
 
 import com.github.fengxxc.Search;
+import com.github.fengxxc.Singleton;
 import com.intellij.ui.treeStructure.Tree;
 
 import java.awt.event.KeyEvent;
@@ -12,10 +13,8 @@ import java.awt.event.KeyListener;
  * @date 2022-09-29
  */
 public class RtKeyListener implements KeyListener {
-    private Tree tree;
 
-    public RtKeyListener(Tree tree) {
-        this.tree = tree;
+    public RtKeyListener() {
     }
 
     @Override
@@ -23,6 +22,7 @@ public class RtKeyListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        Tree tree = Singleton.getTree();
         final int keyCode = e.getKeyCode();
         if (keyCode == 27) {
             // Esc
@@ -43,6 +43,7 @@ public class RtKeyListener implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        Tree tree = Singleton.getTree();
         tree.clearSelection();
         tree.addSelectionRow(Search.getFirstMatchIndex());
         tree.scrollRowToVisible(Search.getFirstMatchIndex());

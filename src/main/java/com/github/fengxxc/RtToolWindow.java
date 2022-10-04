@@ -19,7 +19,6 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
-import org.jdesktop.swingx.action.ActionManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -32,8 +31,6 @@ import java.util.Date;
 public class RtToolWindow implements ToolWindowFactory {
     private RootTreeNode rootNode = Singleton.getRootTreeNode();
     private Tree tree = Singleton.getTree();
-    // private RootTreeNode rootNode = new RootTreeNode();
-    // private Tree tree = new Tree(rootNode);
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -43,9 +40,9 @@ public class RtToolWindow implements ToolWindowFactory {
                 .setVirtualFile(project.getProjectFile());
 
         loadTree(project);
-        tree.addKeyListener(new RtKeyListener(tree));
+        tree.addKeyListener(new RtKeyListener());
         tree.setCellRenderer(new RtTreeCellRenderer(project));
-        tree.addMouseListener(new RtMouseListener(project, tree));
+        tree.addMouseListener(new RtMouseListener(project));
         JComponent jbScrollPane = new JBScrollPane(tree);
         jbScrollPane.setAutoscrolls(true);
         jbScrollPane.setBackground(Color.magenta);
@@ -53,7 +50,7 @@ public class RtToolWindow implements ToolWindowFactory {
         jPanel.setLayout(new BorderLayout());
         // jPanel.add(new JButton("btn"));
         final SimpleToolWindowPanel simpleToolWindowPanel = new SimpleToolWindowPanel(false, true);
-        RtToolbar rtToolbar = new RtToolbar(tree);
+        RtToolbar rtToolbar = new RtToolbar();
         // rtToolbar.setTargetComponent(rtToolbar);
         simpleToolWindowPanel.setToolbar(rtToolbar);
         simpleToolWindowPanel.setContent(jbScrollPane);

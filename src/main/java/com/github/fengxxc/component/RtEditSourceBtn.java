@@ -1,5 +1,6 @@
 package com.github.fengxxc.component;
 
+import com.github.fengxxc.Singleton;
 import com.github.fengxxc.model.RtTreeNode;
 import com.github.fengxxc.util.IntellijUtil;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -17,17 +18,16 @@ import javax.swing.tree.TreePath;
  * @date 2022-09-29
  */
 public class RtEditSourceBtn extends AnAction {
-    private Tree tree;
 
-    public RtEditSourceBtn(Tree tree, Icon icon) {
+    public RtEditSourceBtn(Icon icon) {
         // 编辑（跳转到）源码，快捷键: Alt+MouseLeft、MouseMiddle
         super("Edit Source Code", "编辑（跳转到）源码，快捷键: Alt+MouseLeft、MouseMiddle", icon);
-        this.tree = tree;
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
+        Tree tree = Singleton.getTree();
         final TreePath selectionPath = tree.getSelectionPath();
         if (selectionPath == null) {
             return;
