@@ -61,8 +61,9 @@ public class SpringMvcHandler {
                     if (res.size() > 0 && res.get(res.size() - 1).getVirtualFile() == javaFile) {
                         res.get(res.size() - 1).setSignCodeEnd(reqMapMatcher.start());
                     }
-                    String uri = pref + parseValueFromRequestMapping(reqMapMatcher.group(2));
-                    SpringMvcTreeNode rtTreeNode = new SpringMvcTreeNode(uri, reqMapMatcher.start(2));
+                    Request request = parseRequestFromRequestMapping(reqMapMatcher.group(2));
+                    String uri = pref + request.Path;
+                    SpringMvcTreeNode rtTreeNode = new SpringMvcTreeNode(uri, request.Method, reqMapMatcher.start(2));
                     rtTreeNode.setSignCodeStart((res.size() == 0 || res.get(res.size() - 1).getVirtualFile() != javaFile) ? controllerMatcher.start() : reqMapMatcher.start());
                     rtTreeNode.setVirtualFile(javaFile);
                     rtTreeNode.setIndexInLevel(indexInLevel++);
@@ -83,4 +84,26 @@ public class SpringMvcHandler {
         }
         return matcher.group(2);
     }
+
+    public static Request parseRequestFromRequestMapping(String obj) {
+        Request request = new Request();
+        Pattern valueCompile = Pattern.compile("(value\\s*=\\s*\")(.*)(\")");
+        Matcher valueMatcher = valueCompile.matcher(obj);
+        if (valueMatcher.find()) {
+            request.Path = valueMatcher.group(2);
+        }
+        Pattern methodCompile = Pattern.compile("(method\\s*=\\s*RequestMethod\\.)([A-Za-z]*)(\\s*)");
+        Matcher methodMatcher = methodCompile.matcher(obj);
+        if (methodMatcher.find()) {
+            request.Method = methodMatcher.group(2);
+        }
+        return request;
+    }
+
+    static class Request {
+        public String Path = "";
+        public String Method = "";
+    }
+
+
 }

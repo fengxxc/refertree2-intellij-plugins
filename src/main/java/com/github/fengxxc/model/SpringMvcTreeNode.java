@@ -7,9 +7,11 @@ package com.github.fengxxc.model;
  */
 public class SpringMvcTreeNode extends RtTreeNode {
     private String uri;
+    private String method;
 
-    public SpringMvcTreeNode(String uri, int textOffset) {
+    public SpringMvcTreeNode(String uri, String method, int textOffset) {
         this.uri = uri;
+        this.method = method;
         super.setTextOffset(textOffset);
     }
 
@@ -22,8 +24,19 @@ public class SpringMvcTreeNode extends RtTreeNode {
         return this;
     }
 
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     @Override
     public String toString() {
-        return uri;
+        return "SpringMvcTreeNode{" +
+                "uri='" + uri + '\'' +
+                ", method='" + method + '\'' +
+                '}';
     }
 }

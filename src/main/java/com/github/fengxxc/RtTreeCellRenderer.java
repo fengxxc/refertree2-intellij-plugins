@@ -67,6 +67,7 @@ public class RtTreeCellRenderer extends ColoredTreeCellRenderer {
             int index;
             // debugger
             // this.append(node.getIndexInLevel() + ": " + node.getSignCodeStart() + "-" + node.getSignCodeEnd(), SimpleTextAttributes.REGULAR_ATTRIBUTES);
+            this.append(node.getMethod() + " ", SimpleTextAttributes.SHORTCUT_ATTRIBUTES);
             if (!Search.isNull() && !"".equals(Search.content())) {
                 if ((index = uri.indexOf(Search.content())) != -1) {
                     final String first = uri.substring(0, index);
