@@ -1,6 +1,7 @@
 package com.github.fengxxc.handler;
 
 import com.github.fengxxc.model.RtTreeNode;
+import com.github.fengxxc.model.ServiceSignNode;
 import com.github.fengxxc.model.SpringMvcTreeNode;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -41,37 +42,37 @@ public class SpringMvcHandler {
                 continue;
             }
 
-            // System.out.println(javaFile.toString());
-            // System.out.println("!!!!match: "+controllerMatcher.group());
+            SpringMvcTreeNode controllerNode = new SpringMvcTreeNode(javaFile);
             final int classIdx = text.indexOf("class");
-            // System.out.println("text.indexOf(\"class\") = " + classIdx);
             final Matcher reqMapMatcher = Pattern.compile("(@RequestMapping\\(\\s*)(.*)(\\s*\\))").matcher(text);
             // final Matcher reqMapMatcher = Pattern.compile("(@RequestMapping\\(\\s*)(.*)(\\s*\\))",Pattern.CASE_INSENSITIVE | Pattern.DOTALL).controllerMatcher(text);
             int matchIdx = 0;
-            String pref = "";
             while (reqMapMatcher.find(matchIdx)) {
                 System.out.println("    "+reqMapMatcher.group(2).toString());
                 matchIdx = reqMapMatcher.end();
                 // System.out.println("matchIdx = " + matchIdx);
                 if (classIdx > matchIdx) {
                     /** 类注解 @RequestMapping */
-                    pref = parseValueFromRequestMapping(reqMapMatcher.group(2));
+                    String pref = parseValueFromRequestMapping(reqMapMatcher.group(2));
+                    controllerNode.setUri(pref);
                 } else {
                     /** 方法注解 @RequestMapping */
-                    if (res.size() > 0 && res.get(res.size() - 1).getVirtualFile() == javaFile) {
-                        res.get(res.size() - 1).setSignCodeEnd(reqMapMatcher.start());
+                    if (controllerNode.getChildCount() > 0 && controllerNode.getVirtualFile() == javaFile) {
+                        controllerNode.getLastChild().setSignCodeEnd(reqMapMatcher.start());
                     }
                     Request request = parseRequestFromRequestMapping(reqMapMatcher.group(2));
-                    String uri = pref + request.Path;
+                    String uri = /*controllerNode.getUri() +*/ request.Path;
                     SpringMvcTreeNode rtTreeNode = new SpringMvcTreeNode(uri, request.Method, reqMapMatcher.start(2));
-                    rtTreeNode.setSignCodeStart((res.size() == 0 || res.get(res.size() - 1).getVirtualFile() != javaFile) ? controllerMatcher.start() : reqMapMatcher.start());
+                    rtTreeNode.setSignCodeStart((controllerNode.getChildCount() == 0 || controllerNode.getVirtualFile() != javaFile) ? controllerMatcher.start() : reqMapMatcher.start());
                     rtTreeNode.setVirtualFile(javaFile);
                     rtTreeNode.setIndexInLevel(indexInLevel++);
                     rtTreeNode.setLevel(1);
-                    res.add( rtTreeNode );
+                    rtTreeNode.add(new ServiceSignNode("loading..."));
+                    controllerNode.add( rtTreeNode );
                 }
             }
-            res.get(res.size() - 1).setSignCodeEnd(text.length());
+            controllerNode.getLastChild().setSignCodeEnd(text.length());
+            res.add(controllerNode);
         }
         return res.toArray(new SpringMvcTreeNode[]{});
     }

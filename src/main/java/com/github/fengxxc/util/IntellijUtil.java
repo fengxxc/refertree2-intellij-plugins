@@ -20,6 +20,8 @@ import com.intellij.psi.PsiManager;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import java.io.FileNotFoundException;
 import java.util.Date;
 
@@ -72,16 +74,28 @@ public class IntellijUtil {
         tree.clearSelection();
         RtTreeNode rootNode = (RtTreeNode) (tree.getModel()).getRoot();
         for (int i = 0; i < rootNode.getChildCount(); i++) {
-            RtTreeNode node = (RtTreeNode) rootNode.getChildAt(i);
-            if (node.getAbsFilePath().equals(virtualFile.getPath()) && node.getSignCodeStart() <= curOffset && curOffset < node.getSignCodeEnd()) {
-                System.out.println("find: " + node.getAbsFilePath());
-                tree.requestFocus();
-                int row = node.getIndexInLevel() + 1;
-                if (tree.isCollapsed(row)) {
-                    tree.expandRow(0);
+            RtTreeNode controllerNode = (RtTreeNode) rootNode.getChildAt(i);
+            // if (controllerNode.getAbsFilePath().equals(virtualFile.getPath()) && controllerNode.getSignCodeStart() <= curOffset && curOffset < controllerNode.getSignCodeEnd()) {
+            if (controllerNode.getAbsFilePath().equals(virtualFile.getPath())) {
+                System.out.println("find: " + controllerNode.getAbsFilePath());
+                for (int j = 0; j < controllerNode.getChildCount(); j++) {
+                    RtTreeNode node = (RtTreeNode) controllerNode.getChildAt(j);
+                    if (node.getSignCodeStart() <= curOffset && curOffset < node.getSignCodeEnd()) {
+                        tree.requestFocus();
+                        TreePath treePath = new TreePath(new Object[]{rootNode, controllerNode, node});
+                        // int row = node.getIndexInLevel() + 1;
+                        // if (tree.isCollapsed(row)) {
+                        if (tree.isCollapsed(treePath)) {
+                            // tree.expandRow(0);
+                            tree.expandPath(treePath.getParentPath());
+                        }
+                        // tree.scrollRowToVisible(row);
+                        tree.scrollPathToVisible(treePath);
+                        // tree.addSelectionRow(row);
+                        tree.addSelectionPath(treePath);
+                        break;
+                    }
                 }
-                tree.scrollRowToVisible(row);
-                tree.addSelectionRow(row);
                 break;
             }
         }

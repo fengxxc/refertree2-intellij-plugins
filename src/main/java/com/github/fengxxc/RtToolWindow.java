@@ -1,20 +1,15 @@
 package com.github.fengxxc;
 
 import com.github.fengxxc.component.RtToolbar;
-import com.github.fengxxc.handler.SpringMvcHandler;
-import com.github.fengxxc.handler.StrutsHandler;
 import com.github.fengxxc.listener.RtKeyListener;
 import com.github.fengxxc.listener.RtMouseListener;
 import com.github.fengxxc.model.RootTreeNode;
-import com.github.fengxxc.model.RtTreeNode;
 import com.github.fengxxc.util.IntellijUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiManager;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
@@ -26,8 +21,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.FileNotFoundException;
-import java.util.Date;
 
 public class RtToolWindow implements ToolWindowFactory {
     private RootTreeNode rootNode = Singleton.getRootTreeNode();

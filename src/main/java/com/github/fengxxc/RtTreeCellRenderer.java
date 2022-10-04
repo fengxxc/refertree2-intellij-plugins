@@ -1,11 +1,9 @@
 package com.github.fengxxc;
 
-import com.github.fengxxc.model.RootTreeNode;
-import com.github.fengxxc.model.RtTreeNode;
-import com.github.fengxxc.model.SpringMvcTreeNode;
-import com.github.fengxxc.model.StrutsTagTreeNode;
+import com.github.fengxxc.model.*;
 import com.github.fengxxc.util.IconUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SimpleTextAttributes;
@@ -64,26 +62,28 @@ public class RtTreeCellRenderer extends ColoredTreeCellRenderer {
         } else if (value instanceof SpringMvcTreeNode) {
             SpringMvcTreeNode node = (SpringMvcTreeNode) value;
             final String uri = node.getUri();
-            int index;
             // debugger
             // this.append(node.getIndexInLevel() + ": " + node.getSignCodeStart() + "-" + node.getSignCodeEnd(), SimpleTextAttributes.REGULAR_ATTRIBUTES);
             this.append(node.getMethod() + " ", SimpleTextAttributes.SHORTCUT_ATTRIBUTES);
-            if (!Search.isNull() && !"".equals(Search.content())) {
-                if ((index = uri.indexOf(Search.content())) != -1) {
-                    final String first = uri.substring(0, index);
-                    final String second = uri.substring(index, index + Search.len());
-                    final String third = uri.substring(index + Search.len());
-                    this.append(first, SimpleTextAttributes.REGULAR_ATTRIBUTES);
-                    this.append(second, new SimpleTextAttributes(new Color(255, 223, 128), new Color(255, 223, 128), new Color(255, 223, 128), SimpleTextAttributes.STYLE_SEARCH_MATCH));
-                    this.append(third, SimpleTextAttributes.REGULAR_ATTRIBUTES);
-                    Search.addMatchIndex(row);
+            if (uri != null && !"".equals(uri)) {
+                if (!Search.isNull() && !"".equals(Search.content())) {
+                    int index = uri.indexOf(Search.content());
+                    if (index != -1) {
+                        final String first = uri.substring(0, index);
+                        final String second = uri.substring(index, index + Search.len());
+                        final String third = uri.substring(index + Search.len());
+                        this.append(first, SimpleTextAttributes.REGULAR_ATTRIBUTES);
+                        this.append(second, new SimpleTextAttributes(new Color(255, 223, 128), new Color(255, 223, 128), new Color(255, 223, 128), SimpleTextAttributes.STYLE_SEARCH_MATCH));
+                        this.append(third, SimpleTextAttributes.REGULAR_ATTRIBUTES);
+                        Search.addMatchIndex(row);
+                    } else {
+                        this.append(uri, SimpleTextAttributes.REGULAR_ATTRIBUTES);
+                        Search.removeMatchIndex(row);
+                    }
                 } else {
                     this.append(uri, SimpleTextAttributes.REGULAR_ATTRIBUTES);
-                    Search.removeMatchIndex(row);
+                    Search.cleanMatchIndex();
                 }
-            } else {
-                this.append(uri, SimpleTextAttributes.REGULAR_ATTRIBUTES);
-                Search.cleanMatchIndex();
             }
             this.append("  " + node.getVirtualFile().getName(), SimpleTextAttributes.GRAYED_ATTRIBUTES);
         } else if (value instanceof RootTreeNode) {
@@ -99,6 +99,13 @@ public class RtTreeCellRenderer extends ColoredTreeCellRenderer {
             this.append("   " + project.getBasePath(), SimpleTextAttributes.GRAYED_ATTRIBUTES);
             this.append("  (" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(rootNode.getUpdateTime()) + ")", SimpleTextAttributes.GRAYED_ATTRIBUTES );
             this.append("    " + rootNode.getPluginInfo(), SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES);
+        } else if (value instanceof ServiceSignNode) {
+            ServiceSignNode signNode = (ServiceSignNode) value;
+            this.append(signNode.getServiceName(), SimpleTextAttributes.SHORTCUT_ATTRIBUTES);
+            String signatureName = signNode.getSignatureName();
+            if (signatureName != null) {
+                this.append("." + signatureName, SimpleTextAttributes.REGULAR_ATTRIBUTES);
+            }
         }
     }
 }

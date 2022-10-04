@@ -1,13 +1,20 @@
 package com.github.fengxxc.model;
 
 
+import com.intellij.openapi.vfs.VirtualFile;
+
 /**
  * @author fengxxc
  * @date 2022-09-25
  */
 public class SpringMvcTreeNode extends RtTreeNode {
     private String uri;
-    private String method;
+    private String method = "";
+
+    public SpringMvcTreeNode(VirtualFile virtualFile) {
+        super();
+        super.setVirtualFile(virtualFile);
+    }
 
     public SpringMvcTreeNode(String uri, String method, int textOffset) {
         this.uri = uri;

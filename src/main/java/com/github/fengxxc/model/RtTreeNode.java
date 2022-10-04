@@ -3,6 +3,7 @@ package com.github.fengxxc.model;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 /**
  * @author fengxxc
@@ -80,5 +81,10 @@ public abstract class RtTreeNode extends DefaultMutableTreeNode {
         }
         // return virtualFile.getUrl();
         return virtualFile.getPath();
+    }
+
+    @Override
+    public RtTreeNode getLastChild() {
+        return (RtTreeNode) super.getLastChild();
     }
 }
