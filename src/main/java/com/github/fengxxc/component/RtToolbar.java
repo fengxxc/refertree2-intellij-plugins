@@ -22,6 +22,8 @@ public class RtToolbar extends ActionToolbarImpl {
                 return new AnAction[]{
                         new RtScrollFromSourceBtn(AllIcons.General.Locate)
                         , new RtEditSourceBtn(AllIcons.Actions.EditSource)
+                        // , new RtRefreshBtn(AllIcons.General.InlineRefresh)
+                        , new RtRefreshBtn(AllIcons.Actions.Refresh)
                         // , new RtEditSourceBtn(AllIcons.Actions.Expandall)
                         // , new RtEditSourceBtn(AllIcons.Actions.ShowAsTree)
                 };

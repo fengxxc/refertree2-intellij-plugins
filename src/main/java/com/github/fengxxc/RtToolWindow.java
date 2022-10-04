@@ -7,6 +7,7 @@ import com.github.fengxxc.listener.RtKeyListener;
 import com.github.fengxxc.listener.RtMouseListener;
 import com.github.fengxxc.model.RootTreeNode;
 import com.github.fengxxc.model.RtTreeNode;
+import com.github.fengxxc.util.IntellijUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
@@ -39,7 +40,7 @@ public class RtToolWindow implements ToolWindowFactory {
                 .setPluginInfo("v1.0.0")
                 .setVirtualFile(project.getProjectFile());
 
-        loadTree(project);
+        IntellijUtil.loadTree(project);
         tree.addKeyListener(new RtKeyListener());
         tree.setCellRenderer(new RtTreeCellRenderer(project));
         tree.addMouseListener(new RtMouseListener(project));
@@ -57,43 +58,13 @@ public class RtToolWindow implements ToolWindowFactory {
         simpleToolWindowPanel.setComponentPopupMenu(new JBPopupMenu("JBPopupMenu"));
         jPanel.add(simpleToolWindowPanel);
         jPanel.registerKeyboardAction(e -> {
-            // System.out.println("+++++++++++++++++++++++++++++++++++++ 开始刷新 +++++++++++++++++++++++++++++++++++++");
-            tree.setPaintBusy(true);
-            // tree.setToolTipText("啊啊啊啊啊啊啊");
-            loadTree(project);
-            tree.revalidate();
-            tree.repaint();
-            tree.setPaintBusy(false);
-            // System.out.println("+++++++++++++++++++++++++++++++++++++ 刷新结束 +++++++++++++++++++++++++++++++++++++");
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_F5, InputEvent.CTRL_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+            IntellijUtil.refresh(project);
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_F5, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         // 获取Service
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content1 = contentFactory.createContent(jPanel, "REST API", false);
         toolWindow.getContentManager().addContent(content1);
-    }
-
-    public void loadTree(@NotNull Project project) {
-        PsiDirectory rootDirectory = PsiManager.getInstance(project).findFile(project.getProjectFile()).getParent().getParentDirectory();
-        rootNode.removeAllChildren();
-        // Struts2
-        RtTreeNode[] strutsTagTreeNodes = null;
-        try {
-            strutsTagTreeNodes = StrutsHandler.parseStrutsCfg(rootDirectory);
-            for (int i = 0; i < strutsTagTreeNodes.length; i++) {
-                rootNode.add(strutsTagTreeNodes[i]);
-            }
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        }
-        // SpringMvc
-        final RtTreeNode[] springMvcTreeNodes = SpringMvcHandler.parse(rootDirectory);
-        for (RtTreeNode springMvcTreeNode : springMvcTreeNodes) {
-            rootNode.add(springMvcTreeNode);
-        }
-        rootNode.setUpdateTime(new Date());
-
-        tree.updateUI();
     }
 
 }

@@ -1,5 +1,9 @@
 package com.github.fengxxc.util;
 
+import com.github.fengxxc.Singleton;
+import com.github.fengxxc.handler.SpringMvcHandler;
+import com.github.fengxxc.handler.StrutsHandler;
+import com.github.fengxxc.model.RootTreeNode;
 import com.github.fengxxc.model.RtTreeNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -12,10 +16,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
+import java.util.Date;
 
 public class IntellijUtil {
     public static PsiFile findFile(PsiDirectory rootDirectory, String deepPathName, String separator) throws FileNotFoundException {
@@ -79,5 +85,42 @@ public class IntellijUtil {
                 break;
             }
         }
+    }
+
+    public static void loadTree(@NotNull Project project) {
+        Tree tree = Singleton.getTree();
+        RootTreeNode rootNode = Singleton.getRootTreeNode();
+        PsiDirectory rootDirectory = PsiManager.getInstance(project).findFile(project.getProjectFile()).getParent().getParentDirectory();
+        rootNode.removeAllChildren();
+        // Struts2
+        RtTreeNode[] strutsTagTreeNodes = null;
+        try {
+            strutsTagTreeNodes = StrutsHandler.parseStrutsCfg(rootDirectory);
+            for (int i = 0; i < strutsTagTreeNodes.length; i++) {
+                rootNode.add(strutsTagTreeNodes[i]);
+            }
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        // SpringMvc
+        final RtTreeNode[] springMvcTreeNodes = SpringMvcHandler.parse(rootDirectory);
+        for (RtTreeNode springMvcTreeNode : springMvcTreeNodes) {
+            rootNode.add(springMvcTreeNode);
+        }
+        rootNode.setUpdateTime(new Date());
+
+        tree.updateUI();
+    }
+
+    public static void refresh(@NotNull Project project) {
+        Tree tree = Singleton.getTree();
+        // System.out.println("+++++++++++++++++++++++++++++++++++++ 开始刷新 +++++++++++++++++++++++++++++++++++++");
+        tree.setPaintBusy(true);
+        // tree.setToolTipText("啊啊啊啊啊啊啊");
+        loadTree(project);
+        tree.revalidate();
+        tree.repaint();
+        tree.setPaintBusy(false);
+        // System.out.println("+++++++++++++++++++++++++++++++++++++ 刷新结束 +++++++++++++++++++++++++++++++++++++");
     }
 }
