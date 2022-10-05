@@ -30,8 +30,7 @@ public class RtKeyListener implements KeyListener {
         } else if (keyCode == 8) {
             // Backspace
             Search.backspace();
-        } else if (isLetterOrNumeral(keyCode))
-        {
+        } else if (isLetterOrNumeral(keyCode)) {
             Search.input(e.getKeyChar());
         }
         tree.updateUI();
@@ -39,7 +38,12 @@ public class RtKeyListener implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (!Search.isNull() && isLetterOrNumeral(e.getKeyCode())) {
+        if (!Search.isNull()
+                && isLetterOrNumeral(e.getKeyCode())
+                && !e.isControlDown()
+                && !e.isShiftDown()
+                && !e.isAltDown()
+        ) {
             Tree tree = Singleton.getTree();
             tree.clearSelection();
             tree.addSelectionRow(Search.getFirstMatchIndex());
