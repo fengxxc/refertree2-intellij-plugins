@@ -30,11 +30,7 @@ public class RtKeyListener implements KeyListener {
         } else if (keyCode == 8) {
             // Backspace
             Search.backspace();
-        } else if ((65 <= keyCode && keyCode <= 90)
-                || keyCode == 45
-                || (47 <= keyCode && keyCode <= 57)
-                || (96 <= keyCode && keyCode <= 107)
-                || (109 <= keyCode && keyCode <=111))
+        } else if (isLetterOrNumeral(keyCode))
         {
             Search.input(e.getKeyChar());
         }
@@ -43,9 +39,18 @@ public class RtKeyListener implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        Tree tree = Singleton.getTree();
-        tree.clearSelection();
-        tree.addSelectionRow(Search.getFirstMatchIndex());
-        tree.scrollRowToVisible(Search.getFirstMatchIndex());
+        if (!Search.isNull() && isLetterOrNumeral(e.getKeyCode())) {
+            Tree tree = Singleton.getTree();
+            tree.clearSelection();
+            tree.addSelectionRow(Search.getFirstMatchIndex());
+        }
+    }
+
+    private static boolean isLetterOrNumeral(int keyCode) {
+        return (65 <= keyCode && keyCode <= 90)
+                || keyCode == 45
+                || (47 <= keyCode && keyCode <= 57)
+                || (96 <= keyCode && keyCode <= 107)
+                || (109 <= keyCode && keyCode <= 111);
     }
 }
