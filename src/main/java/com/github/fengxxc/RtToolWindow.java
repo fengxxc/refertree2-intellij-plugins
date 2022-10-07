@@ -3,6 +3,7 @@ package com.github.fengxxc;
 import com.github.fengxxc.component.RtToolbar;
 import com.github.fengxxc.listener.RtKeyListener;
 import com.github.fengxxc.listener.RtMouseListener;
+import com.github.fengxxc.listener.RtTreeWillExpandListener;
 import com.github.fengxxc.model.RootTreeNode;
 import com.github.fengxxc.util.IntellijUtil;
 import com.intellij.openapi.project.Project;
@@ -37,6 +38,7 @@ public class RtToolWindow implements ToolWindowFactory {
         tree.addKeyListener(new RtKeyListener());
         tree.setCellRenderer(new RtTreeCellRenderer(project));
         tree.addMouseListener(new RtMouseListener(project));
+        tree.addTreeWillExpandListener(new RtTreeWillExpandListener(project));
         JComponent jbScrollPane = new JBScrollPane(tree);
         jbScrollPane.setAutoscrolls(true);
         jbScrollPane.setBackground(Color.magenta);

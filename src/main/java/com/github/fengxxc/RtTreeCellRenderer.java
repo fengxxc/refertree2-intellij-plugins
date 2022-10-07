@@ -3,7 +3,6 @@ package com.github.fengxxc;
 import com.github.fengxxc.model.*;
 import com.github.fengxxc.util.IconUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SimpleTextAttributes;
@@ -99,8 +98,8 @@ public class RtTreeCellRenderer extends ColoredTreeCellRenderer {
             this.append("   " + project.getBasePath(), SimpleTextAttributes.GRAYED_ATTRIBUTES);
             this.append("  (" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(rootNode.getUpdateTime()) + ")", SimpleTextAttributes.GRAYED_ATTRIBUTES );
             this.append("    " + rootNode.getPluginInfo(), SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES);
-        } else if (value instanceof ServiceSignNode) {
-            ServiceSignNode signNode = (ServiceSignNode) value;
+        } else if (value instanceof ServiceSignTreeNode) {
+            ServiceSignTreeNode signNode = (ServiceSignTreeNode) value;
             this.append(signNode.getServiceName(), SimpleTextAttributes.SHORTCUT_ATTRIBUTES);
             String signatureName = signNode.getSignatureName();
             if (signatureName != null) {

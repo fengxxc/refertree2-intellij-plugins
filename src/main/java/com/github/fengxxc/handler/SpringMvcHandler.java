@@ -1,7 +1,8 @@
 package com.github.fengxxc.handler;
 
+import com.github.fengxxc.model.PlaceHolderTreeNode;
 import com.github.fengxxc.model.RtTreeNode;
-import com.github.fengxxc.model.ServiceSignNode;
+import com.github.fengxxc.model.ServiceSignTreeNode;
 import com.github.fengxxc.model.SpringMvcTreeNode;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -43,6 +44,7 @@ public class SpringMvcHandler {
             }
 
             SpringMvcTreeNode controllerNode = new SpringMvcTreeNode(javaFile);
+            controllerNode.setLevel(1);
             final int classIdx = text.indexOf("class");
             final Matcher reqMapMatcher = Pattern.compile("(@RequestMapping\\(\\s*)(.*)(\\s*\\))").matcher(text);
             // final Matcher reqMapMatcher = Pattern.compile("(@RequestMapping\\(\\s*)(.*)(\\s*\\))",Pattern.CASE_INSENSITIVE | Pattern.DOTALL).controllerMatcher(text);
@@ -66,8 +68,8 @@ public class SpringMvcHandler {
                     rtTreeNode.setSignCodeStart((controllerNode.getChildCount() == 0 || controllerNode.getVirtualFile() != javaFile) ? controllerMatcher.start() : reqMapMatcher.start());
                     rtTreeNode.setVirtualFile(javaFile);
                     rtTreeNode.setIndexInLevel(indexInLevel++);
-                    rtTreeNode.setLevel(1);
-                    rtTreeNode.add(new ServiceSignNode("loading..."));
+                    rtTreeNode.setLevel(2);
+                    rtTreeNode.add(new PlaceHolderTreeNode());
                     controllerNode.add( rtTreeNode );
                 }
             }

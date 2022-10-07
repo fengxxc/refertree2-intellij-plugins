@@ -3,6 +3,8 @@ package com.github.fengxxc.model;
 
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.Map;
+
 /**
  * @author fengxxc
  * @date 2022-09-25
@@ -10,6 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 public class SpringMvcTreeNode extends RtTreeNode {
     private String uri;
     private String method = "";
+    private Map<String, VirtualFile> serviceMap;
 
     public SpringMvcTreeNode(VirtualFile virtualFile) {
         super();
@@ -37,6 +40,15 @@ public class SpringMvcTreeNode extends RtTreeNode {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public Map<String, VirtualFile> getServiceMap() {
+        return serviceMap;
+    }
+
+    public SpringMvcTreeNode setServiceMap(Map<String, VirtualFile> serviceMap) {
+        this.serviceMap = serviceMap;
+        return this;
     }
 
     @Override

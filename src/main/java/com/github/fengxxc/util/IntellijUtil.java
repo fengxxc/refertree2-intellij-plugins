@@ -19,6 +19,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -104,7 +105,7 @@ public class IntellijUtil {
     public static void loadTree(@NotNull Project project) {
         Tree tree = Singleton.getTree();
         RootTreeNode rootNode = Singleton.getRootTreeNode();
-        PsiDirectory rootDirectory = PsiManager.getInstance(project).findFile(project.getProjectFile()).getParent().getParentDirectory();
+        PsiDirectory rootDirectory = getRootDirectory(project);
         rootNode.removeAllChildren();
         // Struts2
         RtTreeNode[] strutsTagTreeNodes = null;
@@ -124,6 +125,11 @@ public class IntellijUtil {
         rootNode.setUpdateTime(new Date());
 
         tree.updateUI();
+    }
+
+    @Nullable
+    public static PsiDirectory getRootDirectory(@NotNull Project project) {
+        return PsiManager.getInstance(project).findFile(project.getProjectFile()).getParent().getParentDirectory();
     }
 
     public static void refresh(@NotNull Project project) {
