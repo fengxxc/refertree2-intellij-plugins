@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.fengxxc'
-version '0.0.1'
+version '0.0.2'
 
 repositories {
     mavenCentral()
@@ -18,8 +18,12 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     // see https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration-intellij-extension
-    version.set('2022.1.1')
+    // until
+    // version.set('2022.1.1')
+    // since
+    version.set('2021.2.3')
     plugins = ['com.intellij.java']
+    updateSinceUntilBuild.set(false)
 }
 patchPluginXml {
     // see https://github.com/JetBrains/gradle-intellij-plugin/issues/703#issuecomment-890371832
@@ -32,4 +36,12 @@ test {
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+tasks {
+    patchPluginXml {
+//        sinceBuild.set("212.5457.*")
+        sinceBuild.set("212.")
+        // untilBuild.set("223.*")
+    }
 }
