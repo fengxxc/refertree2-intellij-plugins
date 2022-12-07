@@ -63,7 +63,7 @@ public class RtTreeCellRenderer extends ColoredTreeCellRenderer {
             final String uri = node.getUri();
             // debugger
             // this.append(node.getIndexInLevel() + ": " + node.getSignCodeStart() + "-" + node.getSignCodeEnd(), SimpleTextAttributes.REGULAR_ATTRIBUTES);
-            this.append(node.getMethod() + " ", SimpleTextAttributes.SHORTCUT_ATTRIBUTES);
+            this.append(node.getMethod() + " ", SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES);
             if (uri != null && !"".equals(uri)) {
                 if (!Search.isNull() && !"".equals(Search.content())) {
                     int index = uri.indexOf(Search.content());
@@ -98,10 +98,10 @@ public class RtTreeCellRenderer extends ColoredTreeCellRenderer {
             this.append("   " + project.getBasePath(), SimpleTextAttributes.GRAYED_ATTRIBUTES);
             this.append("  (" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(rootNode.getUpdateTime()) + ")", SimpleTextAttributes.GRAYED_ATTRIBUTES );
             this.append("    " + rootNode.getPluginInfo(), SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES);
-        } else if (value instanceof ServiceSignTreeNode) {
-            ServiceSignTreeNode signNode = (ServiceSignTreeNode) value;
-            this.append(signNode.getServiceName(), SimpleTextAttributes.SHORTCUT_ATTRIBUTES);
-            String signatureName = signNode.getSignatureName();
+        } else if (value instanceof ServiceMethodRefTreeNode) {
+            ServiceMethodRefTreeNode signNode = (ServiceMethodRefTreeNode) value;
+            this.append(signNode.getServiceName(), SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES);
+            String signatureName = signNode.getMethodName();
             if (signatureName != null) {
                 this.append("." + signatureName, SimpleTextAttributes.REGULAR_ATTRIBUTES);
             }

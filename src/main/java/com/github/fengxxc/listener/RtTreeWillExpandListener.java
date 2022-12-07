@@ -1,7 +1,7 @@
 package com.github.fengxxc.listener;
 
 import com.github.fengxxc.model.PlaceHolderTreeNode;
-import com.github.fengxxc.model.ServiceSignTreeNode;
+import com.github.fengxxc.model.ServiceMethodRefTreeNode;
 import com.github.fengxxc.model.SpringMvcTreeNode;
 import com.github.fengxxc.util.IntellijUtil;
 import com.intellij.openapi.project.Project;
@@ -47,7 +47,7 @@ public class RtTreeWillExpandListener implements TreeWillExpandListener {
                 HashMap<String, VirtualFile> serviceMap = new HashMap<>();
                 int autowiredEndIndex = makeServiceMap(text, serviceMap);
                 for (String serviceVar : serviceMap.keySet()) {
-                    Matcher serviceSignMatcher = Pattern.compile("(" + serviceVar + "\\.)([A-Za-z0-9_\\.]+\\(.*\\))").matcher(text);
+                    Matcher serviceSignMatcher = Pattern.compile("(" + serviceVar + "\\.)([A-Za-z0-9_\\.]+)(\\(.*\\))").matcher(text);
                     int findIdx = autowiredEndIndex;
                     while (serviceSignMatcher.find(findIdx)) {
                         boolean directRefer = false;
@@ -58,8 +58,11 @@ public class RtTreeWillExpandListener implements TreeWillExpandListener {
                             }
                             if (child.getSignCodeStart() <= serviceSignMatcher.start() && serviceSignMatcher.end() < child.getSignCodeEnd()) {
                                 VirtualFile virtualFile = serviceMap.get(serviceVar);
-                                ServiceSignTreeNode grandChild = new ServiceSignTreeNode(serviceSignMatcher.start()+":"+serviceSignMatcher.end() + virtualFile.getNameWithoutExtension(), serviceVar, serviceSignMatcher.group(2));
-                                grandChild.setVirtualFile(virtualFile);
+                                ServiceMethodRefTreeNode grandChild = new ServiceMethodRefTreeNode(virtualFile.getNameWithoutExtension(), serviceVar, serviceSignMatcher.group(2));
+                                grandChild.setVirtualFile(child.getVirtualFile());
+                                grandChild.setServiceVirtualFile(virtualFile);
+                                grandChild.setTextOffset(serviceSignMatcher.start());
+                                grandChild.setLevel(3);
                                 child.add(grandChild);
                                 directRefer = true;
                                 break;
