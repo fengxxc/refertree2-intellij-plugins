@@ -61,7 +61,7 @@ public class RtTreeWillExpandListener implements TreeWillExpandListener {
                                 ServiceMethodRefTreeNode grandChild = new ServiceMethodRefTreeNode(virtualFile.getNameWithoutExtension(), serviceVar, serviceSignMatcher.group(2));
                                 grandChild.setVirtualFile(child.getVirtualFile());
                                 grandChild.setServiceVirtualFile(virtualFile);
-                                grandChild.setTextOffset(serviceSignMatcher.start());
+                                grandChild.setTextOffset(serviceSignMatcher.start(2));
                                 grandChild.setLevel(3);
                                 child.add(grandChild);
                                 directRefer = true;
@@ -88,6 +88,8 @@ public class RtTreeWillExpandListener implements TreeWillExpandListener {
                     }
                 }
                 */
+            } else if (node.getLevel() == 2) {
+
             }
         }
     }
