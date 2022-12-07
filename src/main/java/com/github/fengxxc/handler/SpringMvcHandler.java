@@ -2,7 +2,6 @@ package com.github.fengxxc.handler;
 
 import com.github.fengxxc.model.PlaceHolderTreeNode;
 import com.github.fengxxc.model.RtTreeNode;
-import com.github.fengxxc.model.ServiceSignTreeNode;
 import com.github.fengxxc.model.SpringMvcTreeNode;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -73,7 +72,9 @@ public class SpringMvcHandler {
                     controllerNode.add( rtTreeNode );
                 }
             }
-            controllerNode.getLastChild().setSignCodeEnd(text.length());
+            if (controllerNode.getChildCount() > 0) {
+                controllerNode.getLastChild().setSignCodeEnd(text.length());
+            }
             res.add(controllerNode);
         }
         return res.toArray(new SpringMvcTreeNode[]{});
